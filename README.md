@@ -14,4 +14,4 @@ Please select your Assets folder within your project, zip it, and send the zippe
 - [Creating a zipped folder on Windows](https://support.microsoft.com/en-us/windows/zip-and-unzip-files-8d28fa72-f2f9-712f-67df-f80cf89fd4e5)
 - [Creating a zipped folder on a Mac](https://support.apple.com/guide/mac-help/zip-and-unzip-files-and-folders-on-mac-mchlp2528/mac)
 
-(or, if you know what you're doing, you can push it to your own GitHub repo and just send Matt the link to the repo)
+(or, if you know what you're doing, you can push it to your own GitHub repo and just send Matt the link to the repo. Or open a pull request.)
