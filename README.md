@@ -1,7 +1,7 @@
 # VR Haunted House Template
  A bare-bones project for creating a VR Haunted House
 
-[Tutorial Video](https://www.youtube.com/watch?v=p_fpK6kR0Mw)
+### Watch the [Tutorial Video here](https://www.youtube.com/watch?v=p_fpK6kR0Mw)
 
 ## Helpful Links
 
