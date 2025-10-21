@@ -45,7 +45,8 @@ public class player : MonoBehaviour
     {
     foreach (GameObject obj in objectsToCheck)
     {
-    float distance = Vector2.Distance(MainCamera.transform.position, obj.transform.position);
+    float distance = Vector2.Distance(new Vector2(MainCamera.transform.position.x,MainCamera.transform.position.z), new Vector2(obj.transform.position.x, obj.transform.position.z));
+    
     if (distance <=GhostDistance)
         {
         lives = lives - 1;
