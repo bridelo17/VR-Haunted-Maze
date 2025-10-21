@@ -1,15 +1,19 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class player : MonoBehaviour
 {
      
     public TextMeshProUGUI countText;
+    public TextMeshProUGUI livesText;
     public GameObject winTextObject;
     public GameObject loseTextObject;
-    public float life = 1;
+    public GameObject MainCamera;
+    public List<GameObject> objectsToCheck = new List<GameObject>();
+    public float lives = 1;
     private int count;
-    
+    public float GhostDistance;
 
     void Start()
     {
@@ -31,22 +35,27 @@ public class player : MonoBehaviour
     void SetCountText()
     {
         countText.text = "Pumpkin Count: " + count.ToString();
+        livesText.text = "Lives: " + lives.ToString();
         if (count>=4)
         {
             winTextObject.SetActive(true);
         }
     }
-    private void OnCollisionEnter(Collision collision) 
+    void Update()
     {
-        if (collision.gameObject.CompareTag("Ghost"))
+    foreach (GameObject obj in objectsToCheck)
+    {
+    float distance = Vector2.Distance(MainCamera.transform.position, obj.transform.position);
+    if (distance <=GhostDistance)
         {
-            
-            life =- 1;
+        lives = lives - 1;
+        SetCountText();
         }
-        if (life <=0)
+    if (lives <=0)
         {
             loseTextObject.SetActive(true);
         }
     }
-
+    }
+   
 }
