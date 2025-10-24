@@ -1,10 +1,12 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class player : MonoBehaviour
 {
-     
+    public Button RetryButton;
     public TextMeshProUGUI countText;
     public TextMeshProUGUI livesText;
     public GameObject winTextObject;
@@ -17,6 +19,7 @@ public class player : MonoBehaviour
 
     void Start()
     {
+    RetryButton.gameObject.SetActive(false);    
     count = 0;
     SetCountText();  
     winTextObject.SetActive(false);
@@ -43,6 +46,9 @@ public class player : MonoBehaviour
     }
     void Update()
     {
+    if (Time.timeScale == 0f)
+    return;
+    
     foreach (GameObject obj in objectsToCheck)
     {
     float distance = Vector2.Distance(new Vector2(MainCamera.transform.position.x,MainCamera.transform.position.z), new Vector2(obj.transform.position.x, obj.transform.position.z));
@@ -54,9 +60,18 @@ public class player : MonoBehaviour
         }
     if (lives <=0)
         {
+            Time.timeScale = 0f; // freeze game
             loseTextObject.SetActive(true);
+            RetryButton.gameObject.SetActive(true);
         }
     }
+
+    }
+    public void Restart()
+    {
+    Time.timeScale = 1f;    
+    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    Debug.Log("Game restarted!");
     }
    
 }
