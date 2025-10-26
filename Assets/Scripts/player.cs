@@ -7,6 +7,11 @@ using UnityEngine.SceneManagement;
 public class player : MonoBehaviour
 {
     public Button RetryButton;
+    public AudioSource Music;
+    public AudioClip ItemPickup;
+    public AudioClip LoseLife;
+    public AudioClip GameOver;
+    public AudioClip WinGame;
     public TextMeshProUGUI countText;
     public TextMeshProUGUI livesText;
     public GameObject winTextObject;
@@ -16,6 +21,8 @@ public class player : MonoBehaviour
     public float lives = 1;
     private int count;
     public float GhostDistance;
+    public float damageCooldown = 2f;
+    private float lastDamageTime = -999f;
 
     void Start()
     {
@@ -31,7 +38,9 @@ public class player : MonoBehaviour
         {
             other.gameObject.SetActive(false);
             count = count + 1;
+            AudioSource.PlayClipAtPoint(ItemPickup,transform.position,0.5f);
             SetCountText();
+            Debug.Log("Pumpkin picked up");
         }
     
     }
@@ -41,7 +50,10 @@ public class player : MonoBehaviour
         livesText.text = "Lives: " + lives.ToString();
         if (count>=4)
         {
+            Music.Stop();
             winTextObject.SetActive(true);
+            AudioSource.PlayClipAtPoint(WinGame,transform.position,0.25f);
+            RetryButton.gameObject.SetActive(true);
         }
     }
     void Update()
@@ -55,23 +67,26 @@ public class player : MonoBehaviour
     
     if (distance <=GhostDistance)
         {
-        lives = lives - 1;
-        SetCountText();
+            if (Time.time - lastDamageTime >= damageCooldown)
+            {
+                lives -= 1;
+                lastDamageTime = Time.time;
+                AudioSource.PlayClipAtPoint(LoseLife,transform.position,0.5f);
+                SetCountText();
+            }
+        
         }
     if (lives <=0)
         {
             Time.timeScale = 0f; // freeze game
+            Music.Stop();
             loseTextObject.SetActive(true);
+            AudioSource.PlayClipAtPoint(GameOver,transform.position,0.25f);
             RetryButton.gameObject.SetActive(true);
         }
     }
 
     }
-    public void Restart()
-    {
-    Time.timeScale = 1f;    
-    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    Debug.Log("Game restarted!");
-    }
+
    
 }
