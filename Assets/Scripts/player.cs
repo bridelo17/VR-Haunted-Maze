@@ -6,12 +6,15 @@ using UnityEngine.SceneManagement;
 
 public class player : MonoBehaviour
 {
+    public GameObject Ghost;
+    public Transform spawnpoint;
     public Button RetryButton;
     public AudioSource Music;
     public AudioClip ItemPickup;
     public AudioClip LoseLife;
     public AudioClip GameOver;
     public AudioClip WinGame;
+    public AudioClip ChocolatePickup;
     public TextMeshProUGUI countText;
     public TextMeshProUGUI livesText;
     public GameObject winTextObject;
@@ -26,6 +29,7 @@ public class player : MonoBehaviour
 
     void Start()
     {
+    Time.timeScale = 1f;
     RetryButton.gameObject.SetActive(false);    
     count = 0;
     SetCountText();  
@@ -42,15 +46,38 @@ public class player : MonoBehaviour
             SetCountText();
             Debug.Log("Pumpkin picked up");
         }
+        if (other.gameObject.CompareTag("Chocolate"))
+        {
+        other.gameObject.SetActive(false);
+        lives+=1;
+        AudioSource.PlayClipAtPoint(ChocolatePickup,transform.position,0.5f);
+        SetCountText();
+        }
     
     }
     void SetCountText()
     {
         countText.text = "Pumpkin Count: " + count.ToString();
         livesText.text = "Lives: " + lives.ToString();
+        if (count==1)
+        {
+            GameObject newGhost = Instantiate(Ghost,spawnpoint.position,spawnpoint.rotation);
+            objectsToCheck.Add(newGhost);
+        }
+        if (count==2)
+        {
+            GameObject newGhost = Instantiate(Ghost,spawnpoint.position,spawnpoint.rotation);
+            objectsToCheck.Add(newGhost);
+        }
+        if (count==3)
+        {
+            GameObject newGhost = Instantiate(Ghost,spawnpoint.position,spawnpoint.rotation);
+            objectsToCheck.Add(newGhost);
+        }
         if (count>=4)
         {
             Music.Stop();
+            Time.timeScale = 0f; // freeze game
             winTextObject.SetActive(true);
             AudioSource.PlayClipAtPoint(WinGame,transform.position,0.25f);
             RetryButton.gameObject.SetActive(true);
@@ -81,7 +108,7 @@ public class player : MonoBehaviour
             Time.timeScale = 0f; // freeze game
             Music.Stop();
             loseTextObject.SetActive(true);
-            AudioSource.PlayClipAtPoint(GameOver,transform.position,0.25f);
+            AudioSource.PlayClipAtPoint(GameOver,transform.position,0.05f);
             RetryButton.gameObject.SetActive(true);
         }
     }

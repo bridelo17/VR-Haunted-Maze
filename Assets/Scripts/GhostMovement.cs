@@ -9,7 +9,7 @@ public class EnemyMovement : MonoBehaviour
 
     // --- New Speed Variable ---
     [Tooltip("The movement speed of the ghost.")]
-    public float ghostSpeed = 3.5f; 
+    public float ghostSpeed = 10f; 
 
     [Range(-1f, 1f)]
     public float visibilityDotThreshold = 0.5f;

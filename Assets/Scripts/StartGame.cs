@@ -7,7 +7,7 @@ public class StartGame : MonoBehaviour
     
     public void BeginGame()
     {
-
+    Destroy(player);    
     SceneManager.LoadScene("Haunted Maze",LoadSceneMode.Single);
 
     }
@@ -15,6 +15,9 @@ public class StartGame : MonoBehaviour
     // Update is called once per frame
     public void ResetGame()
     {
+    Destroy(player);
+    Time.timeScale = 1f;
     SceneManager.LoadScene("Menu",LoadSceneMode.Single);  
+     
     }
 }
