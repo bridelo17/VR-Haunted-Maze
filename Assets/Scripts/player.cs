@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class player : MonoBehaviour
 {
     public GameObject Ghost;
-    public Transform spawnpoint;
+    public List<Transform> ghostSpawnPoints = new List<Transform>();
     public Button RetryButton;
     public AudioSource Music;
     public AudioClip ItemPickup;
@@ -17,24 +17,31 @@ public class player : MonoBehaviour
     public AudioClip ChocolatePickup;
     public TextMeshProUGUI countText;
     public TextMeshProUGUI livesText;
+    public TextMeshProUGUI scoreText;
     public GameObject winTextObject;
     public GameObject loseTextObject;
+    public GameObject scoreTextObject;
     public GameObject MainCamera;
     public List<GameObject> objectsToCheck = new List<GameObject>();
+    public GameObject Endless;
     public float lives = 1;
     private int count;
+    private int lastcount = 0;
     public float GhostDistance;
     public float damageCooldown = 2f;
     private float lastDamageTime = -999f;
+    private int score;
 
     void Start()
     {
+    Endless = GameObject.FindWithTag("Endless");
     Time.timeScale = 1f;
     RetryButton.gameObject.SetActive(false);    
     count = 0;
     SetCountText();  
     winTextObject.SetActive(false);
     loseTextObject.SetActive(false); 
+    scoreTextObject.SetActive(false);
     }
     void OnTriggerEnter(Collider other)
     {
@@ -55,34 +62,50 @@ public class player : MonoBehaviour
         }
     
     }
-    void SetCountText()
+   void SetCountText()
+{
+    countText.text = "Pumpkin Count: " + count.ToString();
+    livesText.text = "Lives: " + lives.ToString();
+
+    if (count > lastcount)
     {
-        countText.text = "Pumpkin Count: " + count.ToString();
-        livesText.text = "Lives: " + lives.ToString();
-        if (count==1)
+        int ghostsToSpawn = count - lastcount;
+        for (int i = 0; i < ghostsToSpawn; i++)
         {
-            GameObject newGhost = Instantiate(Ghost,spawnpoint.position,spawnpoint.rotation);
-            objectsToCheck.Add(newGhost);
+            if (ghostSpawnPoints.Count > 0)
+            {
+                // Pick a random spawn point from the list
+                int randomIndex = Random.Range(0, ghostSpawnPoints.Count);
+                Transform spawnPoint = ghostSpawnPoints[randomIndex];
+
+                // Spawn the ghost at that point
+                GameObject newGhost = Instantiate(Ghost, spawnPoint.position, spawnPoint.rotation);
+                objectsToCheck.Add(newGhost);
+            }
+            else
+            {
+                Debug.LogWarning("No ghost spawn points defined!");
+            }
         }
-        if (count==2)
-        {
-            GameObject newGhost = Instantiate(Ghost,spawnpoint.position,spawnpoint.rotation);
-            objectsToCheck.Add(newGhost);
-        }
-        if (count==3)
-        {
-            GameObject newGhost = Instantiate(Ghost,spawnpoint.position,spawnpoint.rotation);
-            objectsToCheck.Add(newGhost);
-        }
-        if (count>=4)
+        lastcount = count;
+    }
+
+    if (count >= 4) // win condition
+    {
+        if (Endless == null)
+            Endless = GameObject.FindWithTag("Endless");
+
+        if (Endless == null || !Endless.activeSelf)
         {
             Music.Stop();
             Time.timeScale = 0f; // freeze game
             winTextObject.SetActive(true);
-            AudioSource.PlayClipAtPoint(WinGame,transform.position,0.25f);
+            AudioSource.PlayClipAtPoint(WinGame, transform.position, 0.1f);
             RetryButton.gameObject.SetActive(true);
         }
     }
+}
+
     void Update()
     {
     if (Time.timeScale == 0f)
@@ -98,7 +121,7 @@ public class player : MonoBehaviour
             {
                 lives -= 1;
                 lastDamageTime = Time.time;
-                AudioSource.PlayClipAtPoint(LoseLife,transform.position,0.5f);
+                AudioSource.PlayClipAtPoint(LoseLife,transform.position,0.1f);
                 SetCountText();
             }
         
@@ -107,6 +130,9 @@ public class player : MonoBehaviour
         {
             Time.timeScale = 0f; // freeze game
             Music.Stop();
+            score = count;
+            scoreText.text= "Score: " + score.ToString();
+            scoreTextObject.SetActive(true);
             loseTextObject.SetActive(true);
             AudioSource.PlayClipAtPoint(GameOver,transform.position,0.05f);
             RetryButton.gameObject.SetActive(true);
@@ -114,6 +140,5 @@ public class player : MonoBehaviour
     }
 
     }
-
-   
 }
+
